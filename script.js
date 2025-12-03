@@ -194,19 +194,18 @@ function scrollSlider(containerId, amount) {
 async function loadHome() {
     document.getElementById('home-page').classList.remove('hidden');
     
-    // Use the new endpoints from the documentation
-    const [latestData, popularData] = await Promise.all([
-        fetchAPI('/comic/terbaru'),
-        fetchAPI('/comic/populer')
-    ]);
+    // Use the new homepage endpoint
+    const data = await fetchAPI('/comic/homepage');
+    if (!data) return;
 
-    if (!latestData || !popularData) return;
+    // The API returns empty arrays for popular and ranking, use latest as fallback for slider
+    const popularItems = data.popular.length > 0 ? data.popular : data.latest.slice(0, 10);
+    const latestItems = data.latest;
+    const rankingItems = data.ranking.length > 0 ? data.ranking : data.latest.slice(0, 10);
 
-    renderSlider('popular-slider', popularData.comics || []);
-    renderGrid('latest-grid', latestData.comics || []);
-    
-    // For ranking, we'll use the popular data as a proxy
-    renderList('ranking-list', (popularData.comics || []).slice(0, 10));
+    renderSlider('popular-slider', popularItems);
+    renderGrid('latest-grid', latestItems);
+    renderList('ranking-list', rankingItems);
 
     hideLoading();
 }
@@ -274,10 +273,21 @@ async function loadBrowse() {
     params.append('page', '1');
     params.append('limit', '50');
 
-    const data = await fetchAPI(`/comic/advanced-search?${params}`);
+    // Use the new type filter endpoint if only type is selected
+    let data;
+    if (type && !order && !genre) {
+        data = await fetchAPI(`/comic/type/${type}`);
+        // Convert object response to array
+        if (data && typeof data === 'object' && !Array.isArray(data)) {
+            data = Object.values(data).filter(item => typeof item === 'object');
+        }
+    } else {
+        data = await fetchAPI(`/comic/advanced-search?${params}`);
+    }
+
     if (!data) return;
 
-    renderGrid('browse-grid', data.comics || []);
+    renderGrid('browse-grid', data.comics || data || []);
 
     hideLoading();
 }
@@ -288,18 +298,18 @@ async function loadComicDetail(slug) {
     const data = await fetchAPI(`/comic/comic/${slug}`);
     if (!data) return;
 
-    document.getElementById('detail-cover').src = data.cover || '';
-    document.getElementById('detail-title').textContent = data.title || 'N/A';
+    document.getElementById('detail-cover').src = data.image || data.cover || '';
+    document.getElementById('detail-title').textContent = data.title || data.title_indonesian || 'N/A';
     document.getElementById('detail-synopsis').textContent = data.synopsis || 'No synopsis available';
-    document.getElementById('detail-author').textContent = data.author ? `Author: ${data.author}` : '';
-    document.getElementById('detail-type').textContent = data.type ? `Type: ${data.type}` : '';
-    document.getElementById('detail-status').textContent = data.status ? `Status: ${data.status}` : '';
+    document.getElementById('detail-author').textContent = data.metadata?.author ? `Author: ${data.metadata.author}` : '';
+    document.getElementById('detail-type').textContent = data.metadata?.type ? `Type: ${data.metadata.type}` : '';
+    document.getElementById('detail-status').textContent = data.metadata?.status ? `Status: ${data.metadata.status}` : '';
 
     const genresContainer = document.getElementById('detail-genres');
     genresContainer.innerHTML = '';
     (data.genres || []).forEach(genre => {
         const span = document.createElement('span');
-        span.textContent = genre;
+        span.textContent = genre.name;
         genresContainer.appendChild(span);
     });
 
@@ -308,7 +318,7 @@ async function loadComicDetail(slug) {
     (data.chapters || []).forEach(chapter => {
         const item = document.createElement('div');
         item.className = 'chapter-item';
-        item.textContent = chapter.title || `Chapter ${chapter.number}`;
+        item.textContent = chapter.chapter || `Chapter ${chapter.number}`;
         item.addEventListener('click', () => {
             // The slug for the chapter is usually the segment from the original link
             // Assuming the structure is /manga/slug/chapter-segment
@@ -325,36 +335,62 @@ async function loadChapter(comicSlug, chapterSegment) {
     document.getElementById('read-page').classList.remove('hidden');
     
     // The chapter endpoint uses the segment, not a slug
-    const chapterData = await fetchAPI(`/comic/chapter/${chapterSegment}`);
+    const [chapterData, navData] = await Promise.all([
+        fetchAPI(`/comic/chapter/${chapterSegment}`),
+        fetchAPI(`/comic/chapter/${chapterSegment}/navigation`) // Assuming this endpoint exists based on the chapter data structure
+    ]);
+
     if (!chapterData) return;
 
-    document.getElementById('reader-title').textContent = chapterData.title || 'Reading';
+    document.getElementById('reader-title').textContent = chapterData.chapter_title || chapterData.title || 'Reading';
     currentChapterSlug = chapterSegment;
 
     const content = document.getElementById('reader-content');
     content.innerHTML = '';
     (chapterData.images || []).forEach(imgUrl => {
         const img = document.createElement('img');
-        img.src = imgUrl;
+        img.src = imgUrl.trim(); // Trim whitespace from URL
         img.alt = 'Page';
         img.loading = 'lazy';
         content.appendChild(img);
     });
 
-    // Navigation for chapters is not directly provided by the /chapter endpoint
-    // We would need to fetch the comic detail again or implement logic to determine next/prev
-    // For simplicity in this implementation, we'll disable navigation buttons
-    document.getElementById('prev-chapter').style.display = 'none';
-    document.getElementById('next-chapter').style.display = 'none';
+    // Update navigation buttons
+    if (navData && navData.navigation) {
+        const prevBtn = document.getElementById('prev-chapter');
+        const nextBtn = document.getElementById('next-chapter');
+        
+        if (navData.navigation.previousChapter) {
+            prevBtn.onclick = () => {
+                window.location.hash = `#read/${comicSlug}/${navData.navigation.previousChapter}`;
+            };
+            prevBtn.disabled = false;
+        } else {
+            prevBtn.disabled = true;
+        }
+        
+        if (navData.navigation.nextChapter) {
+            nextBtn.onclick = () => {
+                window.location.hash = `#read/${comicSlug}/${navData.navigation.nextChapter}`;
+            };
+            nextBtn.disabled = false;
+        } else {
+            nextBtn.disabled = true;
+        }
+    } else {
+        // Fallback if navigation data is not available
+        document.getElementById('prev-chapter').disabled = true;
+        document.getElementById('next-chapter').disabled = true;
+    }
 
     hideLoading();
 }
 
 async function navigateChapter(e) {
-    // Chapter navigation requires fetching the comic detail to get the full chapter list
-    // This is complex and requires more state management than implemented here
-    // For now, this feature is disabled or requires a more complex implementation
-    console.warn('Chapter navigation not fully implemented with current API structure.');
+    // This function is now handled by the inline onclick in loadChapter
+    // It's kept for potential future enhancements or debugging
+    const direction = e.target.closest('#prev-chapter') ? 'prev' : 'next';
+    console.warn(`Navigation ${direction} attempted, but should be handled by button click handler in loadChapter.`);
 }
 
 async function handleSearch(e) {
@@ -367,18 +403,22 @@ async function handleSearch(e) {
     const data = await fetchAPI(`/comic/search?q=${encodeURIComponent(query)}`);
     if (!data) return;
 
-    renderGrid('search-results', data.comics || []);
+    // Use the new search data structure
+    if (data.status === true) {
+        renderGrid('search-results', data.data || []);
+    } else {
+        renderGrid('search-results', []);
+    }
 }
 
 async function loadTrending(period = 'daily') {
     document.getElementById('trending-page').classList.remove('hidden');
     
-    // The documentation doesn't specify a direct trending endpoint with period filters.
-    // We'll use the populer endpoint as a proxy for trending.
-    const data = await fetchAPI('/comic/populer');
+    // Use the trending endpoint
+    const data = await fetchAPI(`/comic/trending`);
     if (!data) return;
 
-    renderGrid('trending-grid', data.comics || []);
+    renderGrid('trending-grid', data.trending || []);
 
     hideLoading();
 }
@@ -404,13 +444,51 @@ async function loadRandom() {
 async function loadStats() {
     document.getElementById('stats-page').classList.remove('hidden');
     
-    const [statsData, comparisonData] = await Promise.all([
+    const [statsData, comparisonData, fullStatsData] = await Promise.all([
         fetchAPI('/comic/stats'),
-        fetchAPI('/comic/comparison')
+        fetchAPI('/comic/comparison'),
+        fetchAPI('/comic/fullstats') // Fetch the full stats data
     ]);
 
     const grid = document.getElementById('stats-grid');
-    if (comparisonData && comparisonData.performance_ratio) {
+    if (fullStatsData) {
+        // Display detailed server and endpoint information
+        grid.innerHTML = `
+            <div class="stat-card">
+                <h3>Status Server</h3>
+                <p>${fullStatsData.server_status || 'N/A'}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Endpoint</h3>
+                <p>${fullStatsData.total_available_endpoints || 0}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Endpoint Aktif</h3>
+                <p>${fullStatsData.working_endpoints || 0}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Endpoint Error</h3>
+                <p>${fullStatsData.failed_endpoints || 0}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Uptime</h3>
+                <p>${Math.round(fullStatsData.uptime / 60)} menit</p>
+            </div>
+            <div class="stat-card">
+                <h3>Memory Used</h3>
+                <p>${Math.round(fullStatsData.memory_usage.heapUsed / 1024 / 1024)} MB</p>
+            </div>
+            <div class="stat-card">
+                <h3>Heap Total</h3>
+                <p>${Math.round(fullStatsData.memory_usage.heapTotal / 1024 / 1024)} MB</p>
+            </div>
+            <div class="stat-card">
+                <h3>External Memory</h3>
+                <p>${Math.round(fullStatsData.memory_usage.external / 1024 / 1024)} MB</p>
+            </div>
+        `;
+    } else if (comparisonData && comparisonData.performance_ratio) {
+        // Fallback to previous stats if fullstats fails
         grid.innerHTML = `
             <div class="stat-card">
                 <h3>Total Komik</h3>
@@ -584,23 +662,29 @@ function createGridItem(item) {
     gridItem.className = 'grid-item';
     
     // Adapt for different data structures
+    // For the search endpoint, the structure is different
     const title = item.title || item.name || 'N/A';
-    // Prefer 'cover' for standard endpoints, 'image' for scroll/unlimited/popular
+    // Prefer 'cover' for standard endpoints, 'image' for scroll/unlimited/popular, 'thumbnail' for search
     const cover = item.cover || item.image || '';
-    // Chapter count or info
-    const chapter = item.chapter || `${item.chapter_count || 0} Ch`;
+    // Chapter count or info - for search results, use description
+    const chapter = item.chapter || item.description || `${item.chapter_count || 0} Ch`;
+    const type = item.type || '';
 
     gridItem.innerHTML = `
         <img src="${cover}" alt="${title}">
         <h4>${title}</h4>
-        <p>${item.type || ''} • ${chapter}</p>
+        <p>${type} • ${chapter}</p>
     `;
     gridItem.addEventListener('click', () => {
-        // Prefer slug, fallback to extracting from link for scroll/unlimited data
+        // For search results, the href field contains the path to the detail page
+        // Extract slug from href (e.g., from "/detail-komik/naruto-konohas-story-the-steam-ninja-scrolls/" to "naruto-konohas-story-the-steam-ninja-scrolls")
         let slug = item.slug;
+        if (!slug && item.href) {
+            const match = item.href.match(/\/detail-komik\/([^\/]+)\//);
+            slug = match ? match[1] : null;
+        }
         if (!slug && item.link) {
-            // Extract slug from the link (e.g., from "https://komiku.org/manga/omniscient-readers-viewpoint/ ")
-            // to "omniscient-readers-viewpoint"
+            // Fallback to link extraction if href is not available
             const match = item.link.match(/\/manga\/([^\/]+)\//);
             slug = match ? match[1] : null;
         }
