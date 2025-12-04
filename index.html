@@ -1,190 +1,80 @@
-<!DOCTYPE html>
+<!--
+File: index.html
+Description: Simple AI multi-model chat UI. External JS file: script.js
+Instructions: Save the first block as index.html and the second block as script.js in the same folder.
+--> 
+
+<!-- ====== index.html ====== -->
+<!doctype html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lionime-comic - Baca Komik Gratis</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Multi-Model Chat — Template</title>
+  <style>
+    /* Simple modern styling */
+    :root{--bg1:#0f172a;--bg2:#0b1220;--card:#0b1228;--accent:#7c3aed}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+    body{background:linear-gradient(180deg,var(--bg1),var(--bg2));display:flex;align-items:center;justify-content:center;padding:24px;color:#e6eef8}
+    .wrap{width:min(920px,96%);max-width:1100px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));border-radius:12px;padding:18px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+    header{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px}
+    h1{font-size:18px;margin:0}
+    .controls{display:flex;gap:8px;align-items:center}
+    select,button,input[type=text]{padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+    button.primary{background:linear-gradient(90deg,var(--accent),#4f46e5);border:none;color:white;padding:9px 14px;cursor:pointer;box-shadow:0 6px 18px rgba(124,58,237,0.14)}
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);cursor:pointer}
+    .chat-area{height:520px;overflow:auto;padding:16px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
+    .msg{display:flex;margin:8px 0;gap:10px;align-items:flex-end}
+    .msg.user{justify-content:flex-end}
+    .bubble{max-width:78%;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,0.02);backdrop-filter:blur(2px)}
+    .msg.ai .bubble{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-left:3px solid rgba(124,58,237,0.9)}
+    .msg.user .bubble{background:linear-gradient(180deg, rgba(124,58,237,0.16), rgba(79,70,229,0.12));color:white;border-right:3px solid rgba(124,58,237,0.9)}
+    footer{display:flex;gap:8px;margin-top:12px}
+    .small{font-size:12px;color:rgba(230,238,248,0.6)}
+    .loader{display:inline-block;padding:4px 8px;border-radius:8px;background:rgba(255,255,255,0.02);font-size:13px}
+    .model-add {display:flex;gap:6px}
+    @media (max-width:640px){.chat-area{height:420px}}
+  </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <h1 class="nav-logo">Lionime-comic</h1>
-            <button class="nav-toggle" id="nav-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            <ul class="nav-menu" id="nav-menu">
-                <li><a href="#home" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="#browse" class="nav-link"><i class="fas fa-search"></i> Browse</a></li>
-                <li><a href="#genres" class="nav-link"><i class="fas fa-tags"></i> Genres</a></li>
-                <li><a href="#trending" class="nav-link"><i class="fas fa-fire"></i> Trending</a></li>
-                <li><a href="#random" class="nav-link"><i class="fas fa-random"></i> Random</a></li>
-                <li><a href="#stats" class="nav-link"><i class="fas fa-chart-bar"></i> Stats</a></li>
-                <li><button class="theme-toggle" id="theme-toggle">
-                    <i class="fas fa-moon"></i>
-                </button></li>
-            </ul>
+  <div class="wrap">
+    <div class="card">
+      <header>
+        <h1>AI Multi-Model Chat Template</h1>
+        <div class="controls">
+          <label class="small">Model</label>
+          <select id="modelSelect">
+            <option value="nvidia/nemotron-nano-12b-v2-vl:free">nvidia/nemotron-nano-12b-v2-vl:free</option>
+            <option value="openai/gpt-4o-mini">openai/gpt-4o-mini</option>
+            <option value="google/gemini-1.5-flash">google/gemini-1.5-flash</option>
+            <option value="deepseek/deepseek-chat">deepseek/deepseek-chat</option>
+          </select>
+          <button class="ghost" id="btnAddModel">Tambah Model</button>
+          <button class="ghost" id="btnClear">Clear Chat</button>
         </div>
-    </nav>
+      </header>
 
-    <div class="mobile-overlay" id="mobile-overlay"></div>
+      <div class="chat-area" id="chatArea" aria-live="polite"></div>
 
-    <main class="main-content">
-        <!-- Loading Spinner -->
-        <div id="loading-spinner" class="loading-spinner">
-            <div class="spinner"></div>
-            <p>Loading...</p>
-        </div>
+      <footer>
+        <input id="promptInput" type="text" placeholder="Ketik pesan..." style="flex:1" />
+        <button class="primary" id="sendBtn">Kirim</button>
+      </footer>
 
-        <!-- Error Message -->
-        <div id="error-message" class="error-message hidden">
-            <i class="fas fa-exclamation-triangle"></i>
-            <p>Gagal memuat data. Coba lagi.</p>
-        </div>
+      <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center">
+        <div class="small">OpenRouter endpoint (browser fetch). Masukkan API key di prompt.js</div>
+        <div class="small">Streaming supported — jika server mendukung SSE/streaming akan muncul token per token</div>
+      </div>
+    </div>
 
-        <!-- Home Page -->
-        <div id="home-page" class="page">
-            <section class="hero">
-                <h2>Selamat Datang di Lionime-comic</h2>
-                <p>Baca komik favoritmu secara gratis!</p>
-            </section>
+    <div style="height:8px"></div>
 
-            <section class="section">
-                <h3>Populer</h3>
-                <div class="slider-container">
-                    <button class="slider-btn prev-btn" id="popular-prev"><i class="fas fa-chevron-left"></i></button>
-                    <div class="slider" id="popular-slider">
-                        <div class="slider-items"></div>
-                    </div>
-                    <button class="slider-btn next-btn" id="popular-next"><i class="fas fa-chevron-right"></i></button>
-                </div>
-            </section>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="ghost" id="downloadBtn">Download files</button>
+    </div>
+  </div>
 
-            <section class="section">
-                <h3>Terbaru</h3>
-                <div class="grid" id="latest-grid"></div>
-            </section>
-
-            <section class="section">
-                <h3>Peringkat</h3>
-                <div class="list" id="ranking-list"></div>
-            </section>
-        </div>
-
-        <!-- Search Page -->
-        <div id="search-page" class="page hidden">
-            <section class="search-section">
-                <input type="text" id="search-input" placeholder="Cari komik..." class="search-input">
-                <div class="search-results" id="search-results"></div>
-            </section>
-        </div>
-
-        <!-- Genres Page -->
-        <div id="genres-page" class="page hidden">
-            <section class="genres-section">
-                <h2>Semua Genre</h2>
-                <div class="grid" id="genres-grid"></div>
-            </section>
-        </div>
-
-        <!-- Browse Page -->
-        <div id="browse-page" class="page hidden">
-            <section class="filters">
-                <select id="type-filter" class="filter-select">
-                    <option value="">Semua Tipe</option>
-                    <option value="manga">Manga</option>
-                    <option value="manhwa">Manhwa</option>
-                    <option value="manhua">Manhua</option>
-                </select>
-                <select id="order-filter" class="filter-select">
-                    <option value="">Urutkan</option>
-                    <option value="latest">Terbaru</option>
-                    <option value="popularity">Popularitas</option>
-                    <option value="rating">Rating</option>
-                    <option value="alpha">A-Z</option>
-                </select>
-                <select id="genre-filter" class="filter-select">
-                    <option value="">Semua Genre</option>
-                </select>
-            </section>
-            <div class="grid" id="browse-grid"></div>
-        </div>
-
-        <!-- Detail Comic Page -->
-        <div id="detail-page" class="page hidden">
-            <div class="comic-detail">
-                <div class="detail-header">
-                    <img id="detail-cover" class="cover" src="" alt="">
-                    <div class="detail-info">
-                        <h1 id="detail-title"></h1>
-                        <p id="detail-synopsis" class="synopsis"></p>
-                        <div class="detail-meta">
-                            <span id="detail-author"></span>
-                            <span id="detail-type"></span>
-                            <span id="detail-status"></span>
-                        </div>
-                        <div class="detail-genres" id="detail-genres"></div>
-                    </div>
-                </div>
-                <div class="chapters-list" id="chapters-list"></div>
-            </div>
-        </div>
-
-        <!-- Read Page -->
-        <div id="read-page" class="page hidden read-page">
-            <div class="reader-header">
-                <button class="reader-nav-btn" id="prev-chapter"><i class="fas fa-arrow-left"></i></button>
-                <h2 id="reader-title"></h2>
-                <button class="reader-nav-btn" id="next-chapter"><i class="fas fa-arrow-right"></i></button>
-            </div>
-            <div class="reader-content" id="reader-content">
-                <!-- Images will be loaded here -->
-            </div>
-        </div>
-
-        <!-- Random Page -->
-        <div id="random-page" class="page hidden">
-            <h2>Komik Acak</h2>
-            <div class="grid" id="random-grid"></div>
-        </div>
-
-        <!-- Trending Page -->
-        <div id="trending-page" class="page hidden">
-            <h2>Komik Trending</h2>
-            <div class="trending-filters">
-                <button class="trending-filter-btn active" data-period="daily">Harian</button>
-                <button class="trending-filter-btn" data-period="weekly">Mingguan</button>
-                <button class="trending-filter-btn" data-period="monthly">Bulanan</button>
-                <button class="trending-filter-btn" data-period="all">Semua Waktu</button>
-            </div>
-            <div class="grid" id="trending-grid"></div>
-        </div>
-
-        <!-- Stats Page -->
-        <div id="stats-page" class="page hidden">
-            <h2>Statistik Komik</h2>
-            <div class="stats-grid" id="stats-grid"></div>
-        </div>
-
-        <!-- Infinite Scroll Page -->
-        <div id="infinite-page" class="page hidden">
-            <h2>Feed Bacaan</h2>
-            <div class="grid" id="infinite-grid"></div>
-            <div id="infinite-loader" class="infinite-loader">Loading...</div>
-        </div>
-
-        <!-- Realtime Page -->
-        <div id="realtime-page" class="page hidden">
-            <h2>Pembaruan Realtime</h2>
-            <div class="list" id="realtime-list"></div>
-        </div>
-    </main>
-
-    <footer class="footer">
-        <p>&copy; 2025 Lionime-comic. Baca komik gratis.</p>
-    </footer>
-
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
