@@ -1,1 +1,84 @@
-<script language=JavaScript> html='%3C%21DOCTYPE%20html%3E%0D%0A%3Chtml%20lang%3D%22id%22%3E%0D%0A%3Chead%3E%0D%0A%20%20%20%20%3Cmeta%20charset%3D%22UTF-8%22%3E%0D%0A%20%20%20%20%3Cmeta%20name%3D%22viewport%22%20content%3D%22width%3Ddevice-width%2C%20initial-scale%3D1.0%22%3E%0D%0A%20%20%20%20%3Ctitle%3ELionime%20-%20Portal%20Anime%3C%2Ftitle%3E%0D%0A%20%20%20%20%3C%21--%20Gunakan%20Tailwind%20CSS%20untuk%20utilitas%20dasar%20--%3E%0D%0A%20%20%20%20%3Cscript%20src%3D%22https%3A%2F%2Fcdn.tailwindcss.com%22%3E%3C%2Fscript%3E%0D%0A%20%20%20%20%3C%21--%20Font%20Awesome%20untuk%20ikon%20--%3E%0D%0A%20%20%20%20%3Clink%20rel%3D%22stylesheet%22%20href%3D%22https%3A%2F%2Fcdnjs.cloudflare.com%2Fajax%2Flibs%2Ffont-awesome%2F6.4.0%2Fcss%2Fall.min.css%22%3E%0D%0A%20%20%20%20%3C%21--%20Tambahkan%20link%20ke%20file%20CSS%20kustom%20--%3E%0D%0A%20%20%20%20%3Clink%20rel%3D%22stylesheet%22%20href%3D%22style.css%22%3E%0D%0A%3C%2Fhead%3E%0D%0A%3Cbody%20class%3D%22min-h-screen%20flex%20flex-col%20bg-slate-900%20text-slate-100%22%3E%0D%0A%20%20%20%20%3C%21--%20Navbar%20--%3E%0D%0A%20%20%20%20%3Cnav%20class%3D%22bg-slate-800%20shadow-lg%22%3E%0D%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22container%20mx-auto%20px-4%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22flex%20justify-between%20items-center%20py-4%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22flex%20items-center%20space-x-4%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ca%20href%3D%22%23%22%20onclick%3D%22loadHome%28%29%22%20class%3D%22text-2xl%20font-bold%20text-white%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ci%20class%3D%22fas%20fa-dragon%20text-primary%20mr-2%22%3E%3C%2Fi%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Lionime%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fa%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%21--%20Tombol%20navigasi%20utama%20--%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22hidden%20md%3Aflex%20space-x-2%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadHome%28%29%22%20class%3D%22nav-btn%22%3EHome%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadPopular%28%29%22%20class%3D%22nav-btn%22%3EPopular%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadOngoing%28%29%22%20class%3D%22nav-btn%22%3EOngoing%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadCompleted%28%29%22%20class%3D%22nav-btn%22%3ECompleted%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadMovies%28%29%22%20class%3D%22nav-btn%22%3EMovies%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadLatest%28%29%22%20class%3D%22nav-btn%22%3ELatest%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadGenres%28%29%22%20class%3D%22nav-btn%22%3EGenres%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadCharacters%28%29%22%20class%3D%22nav-btn%22%3ECharacters%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadSchedule%28%29%22%20class%3D%22nav-btn%22%3ESchedule%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadAlphabet%28%29%22%20class%3D%22nav-btn%22%3EA-Z%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22flex%20items-center%20space-x-4%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22showSearchPage%28%29%22%20class%3D%22search-btn%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ci%20class%3D%22fas%20fa-search%22%3E%3C%2Fi%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%21--%20Tombol%20hamburger%20untuk%20mobile%20--%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20id%3D%22mobile-menu-button%22%20class%3D%22md%3Ahidden%20text-white%20focus%3Aoutline-none%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ci%20class%3D%22fas%20fa-bars%22%3E%3C%2Fi%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%21--%20Menu%20mobile%20--%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%22mobile-menu%22%20class%3D%22md%3Ahidden%20hidden%20flex-col%20space-y-2%20pb-4%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadHome%28%29%22%20class%3D%22mobile-nav-btn%22%3EHome%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadPopular%28%29%22%20class%3D%22mobile-nav-btn%22%3EPopular%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadOngoing%28%29%22%20class%3D%22mobile-nav-btn%22%3EOngoing%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadCompleted%28%29%22%20class%3D%22mobile-nav-btn%22%3ECompleted%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadMovies%28%29%22%20class%3D%22mobile-nav-btn%22%3EMovies%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadLatest%28%29%22%20class%3D%22mobile-nav-btn%22%3ELatest%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadGenres%28%29%22%20class%3D%22mobile-nav-btn%22%3EGenres%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadCharacters%28%29%22%20class%3D%22mobile-nav-btn%22%3ECharacters%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadSchedule%28%29%22%20class%3D%22mobile-nav-btn%22%3ESchedule%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22loadAlphabet%28%29%22%20class%3D%22mobile-nav-btn%22%3EA-Z%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0D%0A%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0D%0A%20%20%20%20%3C%2Fnav%3E%0D%0A%0D%0A%20%20%20%20%3C%21--%20Main%20Content%20--%3E%0D%0A%20%20%20%20%3Cmain%20id%3D%22main-content%22%20class%3D%22flex-grow%20container%20mx-auto%20p-4%22%3E%0D%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22text-center%20py-20%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Ch2%20class%3D%22text-4xl%20font-bold%20mb-4%22%3ESelamat%20Datang%20di%20Lionime%3C%2Fh2%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%20class%3D%22text-xl%20text-slate-300%22%3ETemukan%20ribuan%20anime%20favoritmu%20di%20sini%3C%2Fp%3E%0D%0A%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0D%0A%20%20%20%20%3C%2Fmain%3E%0D%0A%0D%0A%20%20%20%20%3C%21--%20Footer%20--%3E%0D%0A%20%20%20%20%3Cfooter%20class%3D%22bg-slate-800%20p-4%20text-center%20text-slate-400%22%3E%0D%0A%20%20%20%20%20%20%20%20%3Cp%3EJika%20Error%20Direfresh%3C%2Fp%3E%0D%0A%20%20%20%20%3C%2Ffooter%3E%0D%0A%0D%0A%20%20%20%20%3C%21--%20Modal%20for%20Anime%20Detail%20--%3E%0D%0A%20%20%20%20%3Cdiv%20id%3D%22detail-modal%22%20class%3D%22fixed%20inset-0%20bg-black%20bg-opacity-75%20flex%20items-center%20justify-center%20p-4%20z-50%20hidden%22%3E%0D%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22bg-slate-800%20rounded-lg%20max-w-4xl%20w-full%20max-h-%5B90vh%5D%20overflow-y-auto%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22p-6%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22flex%20justify-between%20items-start%20mb-4%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ch2%20id%3D%22detail-title%22%20class%3D%22text-2xl%20font-bold%20text-white%22%3E%3C%2Fh2%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22closeModal%28%29%22%20class%3D%22text-white%20text-2xl%20hover%3Atext-primary%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ci%20class%3D%22fas%20fa-times%22%3E%3C%2Fi%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%22detail-content%22%20class%3D%22space-y-4%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%21--%20Detail%20akan%20diisi%20oleh%20JavaScript%20--%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0D%0A%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0D%0A%20%20%20%20%3C%2Fdiv%3E%0D%0A%0D%0A%20%20%20%20%3C%21--%20Modal%20for%20Episode%20Player%20--%3E%0D%0A%20%20%20%20%3Cdiv%20id%3D%22episode-modal%22%20class%3D%22fixed%20inset-0%20bg-black%20bg-opacity-90%20flex%20items-center%20justify-center%20p-4%20z-50%20hidden%22%3E%0D%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22bg-slate-800%20rounded-lg%20max-w-4xl%20w-full%20max-h-%5B90vh%5D%20overflow-y-auto%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22p-6%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22flex%20justify-between%20items-start%20mb-4%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ch2%20id%3D%22episode-title%22%20class%3D%22text-2xl%20font-bold%20text-white%22%3E%3C%2Fh2%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22closeEpisodeModal%28%29%22%20class%3D%22text-white%20text-2xl%20hover%3Atext-primary%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ci%20class%3D%22fas%20fa-times%22%3E%3C%2Fi%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fbutton%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%22episode-content%22%20class%3D%22space-y-4%22%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%21--%20Player%20akan%20diisi%20oleh%20JavaScript%20--%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0D%0A%20%20%20%20%20%20%20%20%3C%2Fdiv%3E%0D%0A%20%20%20%20%3C%2Fdiv%3E%0D%0A%0D%0A%20%20%20%20%3C%21--%20Script%20--%3E%0D%0A%20%20%20%20%3Cscript%20src%3D%22script.js%22%3E%3C%2Fscript%3E%0D%0A%20%20%20%20%3Cscript%3E%0D%0A%20%20%20%20%20%20%20%20%2F%2F%20Toggle%20mobile%20menu%0D%0A%20%20%20%20%20%20%20%20document.getElementById%28%27mobile-menu-button%27%29.addEventListener%28%27click%27%2C%20function%28%29%20%7B%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20menu%20%3D%20document.getElementById%28%27mobile-menu%27%29%3B%0D%0A%20%20%20%20%20%20%20%20%20%20%20%20menu.classList.toggle%28%27hidden%27%29%3B%0D%0A%20%20%20%20%20%20%20%20%7D%29%3B%0D%0A%20%20%20%20%3C%2Fscript%3E%0D%0A%3C%2Fbody%3E%0D%0A%3C%2Fhtml%3E';d=unescape(html);document.write(d);</script>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Aplikasi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            width: 90%;
+            max-width: 1000px;
+            margin-top: 20px;
+        }
+
+        .app-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .app-card img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .app-card h3 {
+            margin: 10px 0 5px;
+            color: #333;
+        }
+
+        .app-card p {
+            color: #777;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Daftar Aplikasi Saya</h1>
+
+    <div class="app-container">
+        <!-- Contoh Aplikasi 1 -->
+        <div class="app-card" onclick="window.open('https://example.com/app1', '_blank')">
+            <img src="https://placehold.co/60" alt="Aplikasi 1">
+            <h3>Aplikasi 1</h3>
+            <p>Deskripsi singkat aplikasi.</p>
+        </div>
+
+        <!-- Contoh Aplikasi 2 -->
+        <div class="app-card" onclick="window.open('https://example.com/app2', '_blank')">
+            <img src="https://placehold.co/60" alt="Aplikasi 2">
+            <h3>Aplikasi 2</h3>
+            <p>Deskripsi singkat aplikasi.</p>
+        </div>
+
+        <!-- Tambahkan card lain sesuai kebutuhan -->
+    </div>
+
+</body>
+</html>
