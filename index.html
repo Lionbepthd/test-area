@@ -2,83 +2,116 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Daftar Aplikasi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Aplikasi - Mirip Android</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', 'Segoe UI', sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 30px;
+            background: linear-gradient(135deg, #6e8efb, #a777e3); /* Warna latar belakang Android-like */
+            color: white;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
         }
 
         h1 {
-            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
         }
 
-        .app-container {
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .app-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            width: 90%;
-            max-width: 1000px;
-            margin-top: 20px;
-        }
-
-        .app-card {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 25px;
             padding: 20px;
-            text-align: center;
+            justify-content: center;
+        }
+
+        .app-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             cursor: pointer;
-            transition: transform 0.2s ease;
         }
 
-        .app-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .app-card img {
+        .app-icon img {
             width: 60px;
             height: 60px;
-            object-fit: cover;
-            margin-bottom: 10px;
+            border-radius: 16px; /* Mirip Android */
+            background: white;
+            padding: 5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        .app-card h3 {
-            margin: 10px 0 5px;
-            color: #333;
+        .app-icon span {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            text-align: center;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
         }
 
-        .app-card p {
-            color: #777;
-            font-size: 0.9em;
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
 
-    <h1>Daftar Aplikasi Saya</h1>
+    <header>
+        <h1>Dashboard Aplikasi</h1>
+        <p class="subtitle">Sentuh ikon untuk membuka aplikasi</p>
+    </header>
 
-    <div class="app-container">
-        <!-- Contoh Aplikasi 1 -->
-        <div class="app-card" onclick="window.open('https://example.com/app1', '_blank')">
-            <img src="https://placehold.co/60" alt="Aplikasi 1">
-            <h3>Aplikasi 1</h3>
-            <p>Deskripsi singkat aplikasi.</p>
+    <div class="app-grid">
+        <!-- Aplikasi 1 -->
+        <div class="app-icon" onclick="window.open('https://google.com', '_blank')">
+            <img src="https://placehold.co/60?text=G" alt="Google">
+            <span>Google</span>
         </div>
 
-        <!-- Contoh Aplikasi 2 -->
-        <div class="app-card" onclick="window.open('https://example.com/app2', '_blank')">
-            <img src="https://placehold.co/60" alt="Aplikasi 2">
-            <h3>Aplikasi 2</h3>
-            <p>Deskripsi singkat aplikasi.</p>
+        <!-- Aplikasi 2 -->
+        <div class="app-icon" onclick="window.open('https://youtube.com', '_blank')">
+            <img src="https://placehold.co/60?text=YT" alt="YouTube">
+            <span>YouTube</span>
         </div>
 
-        <!-- Tambahkan card lain sesuai kebutuhan -->
+        <!-- Aplikasi 3 -->
+        <div class="app-icon" onclick="window.open('https://github.com', '_blank')">
+            <img src="https://placehold.co/60?text=GH" alt="GitHub">
+            <span>GitHub</span>
+        </div>
+
+        <!-- Aplikasi 4 -->
+        <div class="app-icon" onclick="window.open('https://vercel.com', '_blank')">
+            <img src="https://placehold.co/60?text=VC" alt="Vercel">
+            <span>Vercel</span>
+        </div>
+
+        <!-- Tambahkan aplikasi lain sesuai kebutuhan -->
     </div>
+
+    <footer>
+        <p>Dibuat untuk memudahkan navigasi ke aplikasi web favorit Anda.</p>
+    </footer>
 
 </body>
 </html>
