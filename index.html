@@ -369,8 +369,8 @@
         <nav>
           <ul>
             <li><a href="#" onclick="loadPage('home')">Home</a></li>
-            <li><a href="#" onclick="loadPage('ongoing')">Ongoing</a></li>  <!-- Diubah -->
-            <li><a href="#" onclick="loadPage('completed')">Completed</a></li> <!-- Diubah -->
+            <li><a href="#" onclick="loadPage('ongoing')">Ongoing</a></li>
+            <li><a href="#" onclick="loadPage('completed')">Completed</a></li>
             <li><a href="#" onclick="loadPage('popular')">Populer</a></li>
           </ul>
         </nav>
@@ -597,16 +597,18 @@
         }
     }
 
-    async function loadRecentAnimes() {
+    async function loadRecentAnimes() { // Diubah nama fungsi
         showLoading();
         try {
-            const response = await fetch(`${API_BASE}/recent?page=1`);
+            const response = await fetch(`${API_BASE}/recent?page=1`); // Diubah endpoint
             if (!response.ok) {
                 throw new Error(`Gagal memuat anime terbaru. Status: ${response.status}`);
             }
             const data = await response.json();
             console.log("Data Recent:", data);
-            const html = displayAnimesGrid(data.data?.animeList || [], 'Anime Terbaru');
+            // Gunakan data dari response API
+            const animes = data.data?.animeList || [];
+            const html = displayAnimesGrid(animes, 'Anime Terbaru'); // Diubah judul
             mainContent.innerHTML = html;
         } catch (error) {
             console.error("Error fetching recent ", error);
@@ -614,18 +616,17 @@
         }
     }
 
-    async function loadOngoingAnimes() { // Diubah nama fungsi
+    async function loadOngoingAnimes() {
         showLoading();
          try {
-            const response = await fetch(`${API_BASE}/ongoing?page=1`); // Diubah endpoint
+            const response = await fetch(`${API_BASE}/ongoing?page=1`);
             if (!response.ok) {
                 throw new Error(`Gagal memuat anime ongoing. Status: ${response.status}`);
             }
             const data = await response.json();
             console.log("Data Ongoing:", data);
-            // Gunakan data dari response API
             const animes = data.data?.animeList || [];
-            const html = displayAnimesGrid(animes, 'Anime Ongoing'); // Diubah judul
+            const html = displayAnimesGrid(animes, 'Anime Ongoing');
             mainContent.innerHTML = html;
         } catch (error) {
             console.error("Error fetching ongoing ", error);
@@ -633,18 +634,17 @@
         }
     }
 
-     async function loadCompletedAnimes() { // Diubah nama fungsi
+     async function loadCompletedAnimes() {
         showLoading();
          try {
-            const response = await fetch(`${API_BASE}/completed?page=1`); // Diubah endpoint
+            const response = await fetch(`${API_BASE}/completed?page=1`);
             if (!response.ok) {
                 throw new Error(`Gagal memuat anime completed. Status: ${response.status}`);
             }
             const data = await response.json();
             console.log("Data Completed:", data);
-            // Gunakan data dari response API
             const animes = data.data?.animeList || [];
-            const html = displayAnimesGrid(animes, 'Anime Completed'); // Diubah judul
+            const html = displayAnimesGrid(animes, 'Anime Completed');
             mainContent.innerHTML = html;
         } catch (error) {
             console.error("Error fetching completed ", error);
@@ -661,7 +661,6 @@
             }
             const data = await response.json();
             console.log("Data Popular:", data);
-            // Gunakan data dari response API
             const animes = data.data?.animeList || [];
             const html = displayAnimesGrid(animes, 'Anime Terpopuler');
             mainContent.innerHTML = html;
@@ -677,13 +676,13 @@
             case 'home':
                 loadHomePage();
                 break;
-            case 'recent':
+            case 'recent': // Diubah case
                  loadRecentAnimes();
                  break;
-            case 'ongoing': // Diubah case
+            case 'ongoing':
                 loadOngoingAnimes();
                 break;
-            case 'completed': // Diubah case
+            case 'completed':
                 loadCompletedAnimes();
                 break;
             case 'popular':
