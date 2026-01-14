@@ -401,6 +401,7 @@
         if (url.startsWith('//')) {
             return 'https:' + url;
         }
+        // Hapus spasi di akhir URL jika ada
         return url.trim();
     }
 
@@ -622,7 +623,9 @@
             }
             const data = await response.json();
             console.log("Data Ongoing:", data);
-            const html = displayAnimesGrid(data, 'Anime Ongoing'); // Diubah judul
+            // Gunakan data dari response API
+            const animes = data.data?.animeList || [];
+            const html = displayAnimesGrid(animes, 'Anime Ongoing'); // Diubah judul
             mainContent.innerHTML = html;
         } catch (error) {
             console.error("Error fetching ongoing ", error);
@@ -639,7 +642,9 @@
             }
             const data = await response.json();
             console.log("Data Completed:", data);
-            const html = displayAnimesGrid(data, 'Anime Completed'); // Diubah judul
+            // Gunakan data dari response API
+            const animes = data.data?.animeList || [];
+            const html = displayAnimesGrid(animes, 'Anime Completed'); // Diubah judul
             mainContent.innerHTML = html;
         } catch (error) {
             console.error("Error fetching completed ", error);
@@ -656,7 +661,9 @@
             }
             const data = await response.json();
             console.log("Data Popular:", data);
-            const html = displayAnimesGrid(data, 'Anime Terpopuler');
+            // Gunakan data dari response API
+            const animes = data.data?.animeList || [];
+            const html = displayAnimesGrid(animes, 'Anime Terpopuler');
             mainContent.innerHTML = html;
         } catch (error) {
             console.error("Error fetching popular ", error);
