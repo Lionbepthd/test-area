@@ -5,22 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lionime - Nonton Anime Sub Indo</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="icon" type="image/x-icon" href="https://placehold.co/32x32?text=🐉">
 </head>
 
 <body>
   <!-- Header -->
   <header class="navbar">
-    <div class="logo">
-      <img src="https://placehold.co/60x60?text=🐉" alt="Logo Lionime" />
-      <span>Lionime</span>
-    </div>
+    <div class="logo">🐉 Lionime</div>
 
     <nav class="menu">
       <a href="#" onclick="loadHome()">Home</a>
-      <a href="#" onclick="loadOngoing()">Ongoing</a>
-      <a href="#" onclick="loadPopular()">Popular</a>
-      <a href="#" onclick="loadSchedule()">Schedule</a>
+      <a href="#">Genre</a>
+      <a href="#">Batch</a>
+      <a href="#">Movie</a>
     </nav>
 
     <div class="search-bar">
@@ -36,9 +32,23 @@
       <p>Nikmati koleksi anime favoritmu dengan subtitle Indonesia.</p>
     </section>
 
-    <section class="anime-grid" id="animeList">
-      <!-- Daftar anime akan muncul di sini -->
+    <!-- Recent Anime -->
+    <section class="section-title">
+      <h3>Anime Terbaru</h3>
     </section>
+    <div class="anime-grid" id="recentAnimeList"></div>
+
+    <!-- Top 10 Anime -->
+    <section class="section-title">
+      <h3>Top 10 Anime</h3>
+    </section>
+    <div class="anime-grid" id="top10AnimeList"></div>
+
+    <!-- Movie -->
+    <section class="section-title">
+      <h3>Film Terbaru</h3>
+    </section>
+    <div class="anime-grid" id="movieList"></div>
   </main>
 
   <script src="script.js"></script>
