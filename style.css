@@ -5,119 +5,229 @@
 }
 
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
-  color: white;
+  font-family: 'Nunito', sans-serif;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #e6e6e6;
+  transition: background 0.4s ease;
+  line-height: 1.6;
 }
 
+body.light-mode {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  color: #333;
+}
+
+/* Navbar */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 30px;
-  background: rgba(0, 0, 0, 0.7);
+  padding: 15px 5%;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
   position: sticky;
   top: 0;
   z-index: 100;
-  backdrop-filter: blur(10px);
 }
 
 .logo {
-  font-size: 24px;
-  font-weight: bold;
-  color: #ffd700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #4ecca3;
 }
 
-.menu a {
-  margin: 0 15px;
+.nav-links {
+  display: flex;
+  gap: 25px;
+}
+
+.nav-link {
+  color: #e6e6e6;
   text-decoration: none;
-  color: #ddd;
-  font-weight: 500;
+  font-weight: 600;
+  position: relative;
+  padding-bottom: 3px;
+  transition: color 0.3s;
 }
 
-.search-bar input {
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #4ecca3;
+}
+
+.nav-link:hover {
+  color: #4ecca3;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#searchInput {
   padding: 8px 15px;
-  width: 250px;
+  border-radius: 20px;
+  border: 1px solid #4ecca3;
+  background: rgba(0, 0, 0, 0.2);
+  color: white;
+  width: 200px;
+}
+
+#searchInput::placeholder {
+  color: #aaa;
+}
+
+button {
+  padding: 8px 15px;
   border-radius: 20px;
   border: none;
-  background: #333;
+  background: #4ecca3;
   color: white;
+  cursor: pointer;
+  font-weight: 600;
 }
 
-.search-bar button {
-  background: transparent;
-  border: none;
-  cursor: pointer;  font-size: 18px;
-  margin-left: -30px;
+/* Card Grid */
+.featured {
+  padding: 50px 5%;
 }
 
-.hero {
-  text-align: center;
-  padding: 40px 20px;
-  background: rgba(0, 0, 0, 0.4);
+.featured h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #4ecca3;
 }
 
-.section-title {
-  padding: 20px;
-}
-
-.section-title h3 {
-  font-size: 20px;
-  color: #ffd700;
-}
-
-.anime-grid {
+.card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
-  padding: 0 20px 40px;
 }
 
-.anime-card {
-  background: rgba(30, 30, 40, 0.8);
-  border-radius: 8px;
+.card {
+  background: rgba(30, 30, 46, 0.6);
+  border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  padding: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
-.anime-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 16px rgba(255, 215, 0, 0.3);
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  background: rgba(50, 50, 70, 0.6);
 }
 
-.anime-card img {
+.card img {
   width: 100%;
-  height: auto;
-  display: block;
+  border-radius: 8px;
+  margin-bottom: 10px;
 }
 
-.anime-card .title {
-  padding: 10px;
-  font-size: 13px;
+.card h4 {
+  font-size: 1rem;
   color: #fff;
-  white-space: nowrap;  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.anime-card .episodes {
+.card p {
+  font-size: 0.9rem;
   color: #aaa;
-  font-size: 12px;
-  padding: 0 10px 10px;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .navbar {
-    flex-direction: column;
-    gap: 15px;
-  }
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
 
-  .search-bar input {
-    width: 90%;
-  }
+.modal-content {
+  background: #1a1a2e;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  color: white;
+  text-align: center;
+}
 
-  .anime-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  }
+.light-mode .modal-content {
+  background: #f8f9fa;
+  color: #333;
+}
+
+.close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #aaa;
+}
+
+.close:hover {
+  color: #4ecca3;
+}
+
+.episode-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.ep-btn {
+  background: #4ecca3;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.ep-btn:hover {
+  background: #3da58a;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #aaa;
+  font-size: 0.9rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 50px;
+}
+
+/* Light Mode Adjustments */
+.light-mode .navbar,
+.light-mode .card {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+}
+
+.light-mode .card:hover {
+  background: rgba(240, 240, 250, 0.9);
 }
