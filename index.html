@@ -1,68 +1,30 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lionime-anime | Tonton Anime Sub Indo</title>
-  <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Lionime Hub - Portal Anime</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱‍👤</text></svg>">
 </head>
 <body>
-  <!-- Header -->
-  <header class="navbar">
-    <div class="logo">
-      <img src="https://placehold.co/50x50/4ecca3/white?text=🦁" alt="Lionime Logo">
-      <span>Lionime</span>
-    </div>
-    <nav class="nav-links">
-      <a href="#" class="nav-link active">Home</a>
-      <a href="#" class="nav-link">Anime</a>
-      <a href="#" class="nav-link">Movie</a>
-      <a href="#" class="nav-link">Genre</a>
-      <a href="#riwayat" class="nav-link">Riwayat</a>
+    <nav id="navbar">
+        <div class="logo">LIONIME</div>
+        <ul class="nav-links">
+            <li><a href="#home" data-page="home">Home</a></li>
+            <li><a href="#ongoing" data-page="ongoing">Ongoing</a></li>
+            <li><a href="#completed" data-page="completed">Completed</a></li>
+            <li><a href="#schedule" data-page="schedule">Schedule</a></li>
+            <li><a href="#history" data-page="history">History</a></li>
+        </ul>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Cari anime..." />
+            <button id="search-btn">🔍</button>
+        </div>
     </nav>
-    <div class="controls">
-      <input type="text" id="searchInput" placeholder="Cari anime... 🔍">
-      <button id="searchBtn">🔍</button>
-      <button id="themeToggle">🌙</button>
-    </div>
-  </header>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Temukan Dunia Baru di Setiap Episode</h1>
-      <p>Tonton anime favoritmu dalam kualitas tinggi, subtitle Indonesia, dan update cepat.</p>
-      <button class="cta-btn">Mulai Menonton</button>
-    </div>
-    <div class="hero-visual">
-      <img src="https://placehold.co/600x400/4ecca3/white?text=Hero+Anime" alt="Visual Hero">
-    </div>
-  </section>
+    <main id="main-content"></main>
 
-  <!-- Featured Anime -->
-  <section class="featured">
-    <h2>Anime Terbaru</h2>
-    <div id="latestEpisodes" class="card-grid"></div>
-  </section>
-
-  <!-- Popular Anime -->
-  <section class="featured">
-    <h2>Anime Populer</h2>
-    <div id="popularAnime" class="card-grid"></div>
-  </section>
-
-  <!-- Search Results -->
-  <section id="results" style="display:none;" class="featured">
-    <h2>Hasil Pencarian</h2>
-    <div id="searchResults" class="card-grid"></div>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2026 Lionime-anime. Hak Cipta Dilindungi.</p>
-  </footer>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
