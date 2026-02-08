@@ -1,4 +1,3 @@
-</div>`;
 // CONFIG
 const API_BASE = 'https://www.sankavollerei.com';
 
@@ -473,4 +472,4 @@ function showError(msg) {
 
 function showEmptyState() {
     mainContent.innerHTML = `<div class="empty-state">Data tidak ditemukan.</div>`;
-}}
+}
