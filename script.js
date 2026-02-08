@@ -47,8 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // SEARCH
     searchBtn.addEventListener('click', () => {
         const query = searchInput.value.trim();
-        if (query) loadSearchPage(query);
-    });
+        if (query) loadSearchPage(query);    });
 
     searchInput.addEventListener('input', debounce(() => {
         const query = searchInput.value.trim();
@@ -97,14 +96,13 @@ async function requestNotificationPermission() {
         if (permission === "granted") notificationsEnabled = true;
     }
 }
-
 function showNotification(title, body) {
     if (notificationsEnabled) {
         new Notification(title, { body });
     }
 }
 
-// HISTORY
+// WATCH HISTORY
 const HISTORY_KEY = 'lionime_watch_history';
 const MAX_HISTORY = 20;
 
@@ -147,8 +145,7 @@ async function renderPage(type) {
     mainContent.innerHTML = `<h2 class="page-title">${
         type === 'ongoing' ? 'Sedang Tayang' :
         type === 'completed' ? 'Sudah Tamat' :
-        type === 'schedule' ? 'Jadwal Rilis' : 
-        type.charAt(0).toUpperCase() + type.slice(1)
+        type === 'schedule' ? 'Jadwal Rilis' :         type.charAt(0).toUpperCase() + type.slice(1)
     }</h2>`;
 
     let endpoint = '';
@@ -197,8 +194,7 @@ async function renderPage(type) {
             `;
             document.querySelector('.anime-grid').insertAdjacentHTML('beforebegin', bannerHTML);
         }
-    } else {
-        showEmptyState();
+    } else {        showEmptyState();
     }
 }
 
@@ -247,8 +243,7 @@ async function loadMorePage(pageType, nextPage) {
                     <div class="anime-card" onclick="loadDetailPage('${slug}')">
                         <img src="${(anime.poster || '').trim()}" alt="${anime.title}" onerror="this.src='https://via.placeholder.com/247x350/111827/8b5cf6?text=No+Image'">
                         <div class="card-info">
-                            <h3>${anime.title}</h3>
-                            <span class="status-badge">${statusDisplay}</span>
+                            <h3>${anime.title}</h3>                            <span class="status-badge">${statusDisplay}</span>
                         </div>
                     </div>
                 `;
@@ -297,8 +292,7 @@ function renderSchedule(scheduleData) {
                         <p class="episode-time">${a.episode_info}</p>
                     </div>
                 </div>
-            `).join('');
-            html += '</div></div>';
+            `).join('');            html += '</div></div>';
         }
     });
     mainContent.innerHTML += html;
@@ -347,8 +341,7 @@ async function loadSearchPage(query) {
     mainContent.innerHTML = `<h2 class="page-title">Hasil Pencarian: "${query}"</h2><div class="anime-grid">${Array.from({length: 8}, _ => '<div class="skeleton"></div>').join('')}</div>`;
     const data = await fetchData(`${API_BASE}/anime/oploverz/search/${encodeURIComponent(query)}`);
     if (data && data.anime_list && data.anime_list.length > 0) {
-        renderAnimeGrid(data.anime_list, 'search');
-    } else {
+        renderAnimeGrid(data.anime_list, 'search');    } else {
         mainContent.innerHTML = `<h2 class="page-title">Hasil Pencarian: "${query}"</h2><div class="empty-state">Tidak ada anime ditemukan.</div>`;
     }
 }
@@ -357,14 +350,18 @@ async function loadDetailPage(slug) {
     history.pushState({page: 'detail', slug}, '', `#anime/${slug}`);
     mainContent.innerHTML = `<div class="detail-banner"><div class="skeleton banner-skeleton"></div></div><div class="detail-info-container"><div class="skeleton" style="height:200px;margin:1rem 0;"></div></div>`;
     const data = await fetchData(`${API_BASE}/anime/oploverz/anime/${slug}`);
-    if (data && data.detail) renderDetailPage(data.detail);
+    if (data && data.detail) renderDetailPage(data.detail, slug);
     else showError('Gagal memuat detail.');
 }
 
-function renderDetailPage(anime) {
+function renderDetailPage(anime, animeSlug) {
     const info = anime.info || {};
     const genres = anime.genres?.map(g => g.name).join(', ') || '–';
     const statusDisplay = info.status === 'Completed' ? 'Selesai' : 'Sedang Tayang';
+
+    // Simpan episode list ke localStorage untuk navigasi
+    localStorage.setItem(`episodes_${animeSlug}`, JSON.stringify(anime.episode_list));
+
     let episodesHTML = '';
     if (anime.episode_list && anime.episode_list.length > 0) {
         const sorted = [...anime.episode_list].sort((a, b) => extractEpisodeNumber(b.episode) - extractEpisodeNumber(a.episode));
@@ -393,8 +390,7 @@ function renderDetailPage(anime) {
                 <p><strong>Durasi:</strong> ${info.duration || '–'}</p>
                 <p><strong>Musim:</strong> ${info.season || '–'}</p>
                 <p><strong>Tipe:</strong> ${info.type || '–'}</p>
-                <p><strong>Genre:</strong> ${genres}</p>
-                <p><strong>Rilis:</strong> ${info.released_on || '–'}</p>
+                <p><strong>Genre:</strong> ${genres}</p>                <p><strong>Rilis:</strong> ${info.released_on || '–'}</p>
                 <p><strong>Update:</strong> ${info.updated_on || '–'}</p>
             </div>
         </div>
@@ -418,38 +414,90 @@ async function loadEpisodePage(slug) {
 }
 
 function renderEpisodePage(episodeData) {
-    const { episode_title, streams } = episodeData;
+    const { episode_title, streams, slug: currentSlug } = episodeData;
+
     let animeTitle = episode_title;
-    if (episode_title.includes(' Episode ')) animeTitle = episode_title.split(' Episode ')[0];
-    else if (episode_title.includes(' Episode')) animeTitle = episode_title.split(' Episode')[0];
+    if (episode_title.includes(' Episode ')) {
+        animeTitle = episode_title.split(' Episode ')[0];
+    } else if (episode_title.includes(' Episode')) {
+        animeTitle = episode_title.split(' Episode')[0];
+    }
 
-    const mainStream = streams.find(s => s.name === 'Main Stream') || streams[0];
-    const serverListHTML = streams.map(s => `<button class="server-btn" data-url="${s.url.trim()}">${s.name}</button>`).join('');
+    // Ambil slug anime dari URL hash atau ekstrak
+    const pathParts = window.location.hash.split('/');
+    let animeSlug = pathParts[2] || extractAnimeSlugFromEpisodeSlug(currentSlug);
 
-    saveToHistory(animeTitle, episode_title, episodeData.slug || window.location.hash.split('/').pop());
+    // Ambil episode list dari localStorage
+    const episodesKey = `episodes_${animeSlug}`;
+    const episodeList = JSON.parse(localStorage.getItem(episodesKey) || '[]');
+
+    const currentIndex = episodeList.findIndex(ep => ep.slug === currentSlug);
+    const hasPrev = currentIndex > 0;
+    const hasNext = currentIndex >= 0 && currentIndex < episodeList.length - 1;
+    const prevSlug = hasPrev ? episodeList[currentIndex - 1].slug : null;
+    const nextSlug = hasNext ? episodeList[currentIndex + 1].slug : null;
+
+    // Simpan ke history
+    saveToHistory(animeTitle, episode_title, currentSlug);
+    // Render UI
+    let serverListHTML = '';
+    if (streams && streams.length > 0) {
+        serverListHTML = streams.map((stream, idx) => `
+            <button class="server-btn" data-url="${(stream.url || '').trim()}">${stream.name || 'Server ' + (idx + 1)}</button>
+        `).join('');
+    }
 
     mainContent.innerHTML = `
         <h2 class="page-title">${episode_title}</h2>
-        <div class="video-player"><iframe src="${mainStream?.url.trim()}" frameborder="0" allowfullscreen></iframe></div>
-        <div class="server-section"><h3>Pilih Server:</h3><div class="server-list">${serverListHTML}</div></div>
+        <div class="video-player">
+            <iframe src="${(streams[0]?.url || '').trim()}" frameborder="0" allowfullscreen></iframe>
+        </div>
+        ${serverListHTML ? `
+        <div class="server-section">
+            <h3>Pilih Server:</h3>
+            <div class="server-list">${serverListHTML}</div>
+        </div>` : ''}
         <div class="episode-nav">
-            <button id="prev-ep" disabled>← Sebelumnya</button>
-            <span>${episode_title}</span>
-            <button id="next-ep" disabled>Berikutnya →</button>
+            <button id="prev-ep" ${!hasPrev ? 'disabled' : ''}>← Sebelumnya</button>
+            <span>Episode</span>
+            <button id="next-ep" ${!hasNext ? 'disabled' : ''}>Berikutnya →</button>
         </div>
     `;
 
+    // Event listener server
     document.querySelectorAll('.server-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const url = btn.getAttribute('data-url');
             const iframe = document.querySelector('.video-player iframe');
-            if (iframe) {
+            if (iframe && url) {
                 iframe.src = url;
                 document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
             }
         });
     });
+
+    // Navigasi
+    if (hasPrev) {
+        document.getElementById('prev-ep').addEventListener('click', () => {
+            loadEpisodePage(prevSlug);
+        });
+    }
+    if (hasNext) {
+        document.getElementById('next-ep').addEventListener('click', () => {
+            loadEpisodePage(nextSlug);
+        });
+    }
+}
+function extractAnimeSlugFromEpisodeSlug(episodeSlug) {
+    if (!episodeSlug) return '';
+    const parts = episodeSlug.split('-');
+    let i = 0;
+    while (i < parts.length) {
+        if (parts[i] === 'episode' || /^\d+$/.test(parts[i])) break;
+        i++;
+    }
+    return parts.slice(0, i).join('-') || episodeSlug;
 }
 
 function renderHistoryPage() {
