@@ -1,3 +1,4 @@
+</div>`;
 // CONFIG
 const API_BASE = 'https://www.sankavollerei.com';
 
@@ -102,7 +103,7 @@ function showNotification(title, body) {
     }
 }
 
-// WATCH HISTORY
+// HISTORY
 const HISTORY_KEY = 'lionime_watch_history';
 const MAX_HISTORY = 20;
 
@@ -350,18 +351,14 @@ async function loadDetailPage(slug) {
     history.pushState({page: 'detail', slug}, '', `#anime/${slug}`);
     mainContent.innerHTML = `<div class="detail-banner"><div class="skeleton banner-skeleton"></div></div><div class="detail-info-container"><div class="skeleton" style="height:200px;margin:1rem 0;"></div></div>`;
     const data = await fetchData(`${API_BASE}/anime/oploverz/anime/${slug}`);
-    if (data && data.detail) renderDetailPage(data.detail, slug);
+    if (data && data.detail) renderDetailPage(data.detail);
     else showError('Gagal memuat detail.');
 }
 
-function renderDetailPage(anime, animeSlug) {
+function renderDetailPage(anime) {
     const info = anime.info || {};
     const genres = anime.genres?.map(g => g.name).join(', ') || '–';
     const statusDisplay = info.status === 'Completed' ? 'Selesai' : 'Sedang Tayang';
-
-    // Simpan episode list ke localStorage untuk navigasi
-    localStorage.setItem(`episodes_${animeSlug}`, JSON.stringify(anime.episode_list));
-
     let episodesHTML = '';
     if (anime.episode_list && anime.episode_list.length > 0) {
         const sorted = [...anime.episode_list].sort((a, b) => extractEpisodeNumber(b.episode) - extractEpisodeNumber(a.episode));
@@ -390,11 +387,11 @@ function renderDetailPage(anime, animeSlug) {
                 <p><strong>Durasi:</strong> ${info.duration || '–'}</p>
                 <p><strong>Musim:</strong> ${info.season || '–'}</p>
                 <p><strong>Tipe:</strong> ${info.type || '–'}</p>
-                <p><strong>Genre:</strong> ${genres}</p>                <p><strong>Rilis:</strong> ${info.released_on || '–'}</p>
+                <p><strong>Genre:</strong> ${genres}</p>
+                <p><strong>Rilis:</strong> ${info.released_on || '–'}</p>
                 <p><strong>Update:</strong> ${info.updated_on || '–'}</p>
             </div>
-        </div>
-        <div class="synopsis-section">
+        </div>        <div class="synopsis-section">
             <h2>Sinopsis</h2>
             <p>${anime.synopsis.replace(/^Sinopsis:\s*/, '')}</p>
         </div>
@@ -414,90 +411,37 @@ async function loadEpisodePage(slug) {
 }
 
 function renderEpisodePage(episodeData) {
-    const { episode_title, streams, slug: currentSlug } = episodeData;
-
+    const { episode_title, streams } = episodeData;
     let animeTitle = episode_title;
-    if (episode_title.includes(' Episode ')) {
-        animeTitle = episode_title.split(' Episode ')[0];
-    } else if (episode_title.includes(' Episode')) {
-        animeTitle = episode_title.split(' Episode')[0];
-    }
+    if (episode_title.includes(' Episode ')) animeTitle = episode_title.split(' Episode ')[0];
+    else if (episode_title.includes(' Episode')) animeTitle = episode_title.split(' Episode')[0];
 
-    // Ambil slug anime dari URL hash atau ekstrak
-    const pathParts = window.location.hash.split('/');
-    let animeSlug = pathParts[2] || extractAnimeSlugFromEpisodeSlug(currentSlug);
+    const mainStream = streams.find(s => s.name === 'Main Stream') || streams[0];
+    const serverListHTML = streams.map(s => `<button class="server-btn" data-url="${s.url.trim()}">${s.name}</button>`).join('');
 
-    // Ambil episode list dari localStorage
-    const episodesKey = `episodes_${animeSlug}`;
-    const episodeList = JSON.parse(localStorage.getItem(episodesKey) || '[]');
-
-    const currentIndex = episodeList.findIndex(ep => ep.slug === currentSlug);
-    const hasPrev = currentIndex > 0;
-    const hasNext = currentIndex >= 0 && currentIndex < episodeList.length - 1;
-    const prevSlug = hasPrev ? episodeList[currentIndex - 1].slug : null;
-    const nextSlug = hasNext ? episodeList[currentIndex + 1].slug : null;
-
-    // Simpan ke history
-    saveToHistory(animeTitle, episode_title, currentSlug);
-    // Render UI
-    let serverListHTML = '';
-    if (streams && streams.length > 0) {
-        serverListHTML = streams.map((stream, idx) => `
-            <button class="server-btn" data-url="${(stream.url || '').trim()}">${stream.name || 'Server ' + (idx + 1)}</button>
-        `).join('');
-    }
+    saveToHistory(animeTitle, episode_title, episodeData.slug || window.location.hash.split('/').pop());
 
     mainContent.innerHTML = `
         <h2 class="page-title">${episode_title}</h2>
-        <div class="video-player">
-            <iframe src="${(streams[0]?.url || '').trim()}" frameborder="0" allowfullscreen></iframe>
-        </div>
-        ${serverListHTML ? `
-        <div class="server-section">
-            <h3>Pilih Server:</h3>
-            <div class="server-list">${serverListHTML}</div>
-        </div>` : ''}
+        <div class="video-player"><iframe src="${mainStream?.url.trim()}" frameborder="0" allowfullscreen></iframe></div>
+        <div class="server-section"><h3>Pilih Server:</h3><div class="server-list">${serverListHTML}</div></div>
         <div class="episode-nav">
-            <button id="prev-ep" ${!hasPrev ? 'disabled' : ''}>← Sebelumnya</button>
-            <span>Episode</span>
-            <button id="next-ep" ${!hasNext ? 'disabled' : ''}>Berikutnya →</button>
+            <button id="prev-ep" disabled>← Sebelumnya</button>
+            <span>${episode_title}</span>
+            <button id="next-ep" disabled>Berikutnya →</button>
         </div>
     `;
 
-    // Event listener server
     document.querySelectorAll('.server-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const url = btn.getAttribute('data-url');
             const iframe = document.querySelector('.video-player iframe');
-            if (iframe && url) {
+            if (iframe) {
                 iframe.src = url;
                 document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-            }
-        });
+            }        });
     });
-
-    // Navigasi
-    if (hasPrev) {
-        document.getElementById('prev-ep').addEventListener('click', () => {
-            loadEpisodePage(prevSlug);
-        });
-    }
-    if (hasNext) {
-        document.getElementById('next-ep').addEventListener('click', () => {
-            loadEpisodePage(nextSlug);
-        });
-    }
-}
-function extractAnimeSlugFromEpisodeSlug(episodeSlug) {
-    if (!episodeSlug) return '';
-    const parts = episodeSlug.split('-');
-    let i = 0;
-    while (i < parts.length) {
-        if (parts[i] === 'episode' || /^\d+$/.test(parts[i])) break;
-        i++;
-    }
-    return parts.slice(0, i).join('-') || episodeSlug;
 }
 
 function renderHistoryPage() {
@@ -529,4 +473,4 @@ function showError(msg) {
 
 function showEmptyState() {
     mainContent.innerHTML = `<div class="empty-state">Data tidak ditemukan.</div>`;
-}
+}}
